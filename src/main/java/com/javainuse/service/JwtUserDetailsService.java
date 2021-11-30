@@ -1,10 +1,8 @@
 package com.javainuse.service;
 
-import java.util.ArrayList;
-
-import com.javainuse.dao.UserDao;
-import com.javainuse.model.DAOUser;
+import com.javainuse.entity.UserEntity;
 import com.javainuse.model.UserDTO;
+import com.javainuse.repo.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,26 +11,31 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
-	private UserDao userDao;
-	private PasswordEncoder passwordEncoder;
+    private UserRepo userDao;
+    private PasswordEncoder passwordEncoder;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		DAOUser user = userDao.findByUsername(username);
-		if(user == null) {
-			throw new UsernameNotFoundException("User not found");
-		}
-		return new User(user.getUsername(), user.getPassword(), new ArrayList<>());
-	}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserEntity> user = userDao.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        UserEntity newUser = user.get();
+        
+        return new User(newUser.getUsername(), newUser.getPassword(), new ArrayList<>());
+    }
 
-	public DAOUser save(UserDTO userDto) {
-		DAOUser newUser = new DAOUser();
-		newUser.setUsername(userDto.getUsername());
-		newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		return userDao.save(newUser);
-	}
+    public UserEntity save(UserDTO userDto) {
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername(userDto.username());
+        newUser.setPassword(passwordEncoder.encode(userDto.password()));
+        return userDao.save(newUser);
+    }
 }

@@ -1,4 +1,4 @@
-package com.javainuse.model;
+package com.javainuse.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -6,10 +6,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
-public class DAOUser {
+public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
     private String username;

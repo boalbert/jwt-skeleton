@@ -1,10 +1,5 @@
 package com.javainuse.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+public record UserDTO(String username, String password) {
 
-@Data
-public class UserDTO {
-    private String username;
-    private String password;
 }

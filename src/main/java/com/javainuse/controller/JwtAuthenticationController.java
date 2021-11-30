@@ -1,10 +1,10 @@
 package com.javainuse.controller;
 
 import com.javainuse.config.jwt.JwtTokenUtil;
-import com.javainuse.model.DAOUser;
-import com.javainuse.model.JwtRequest;
-import com.javainuse.model.JwtResponse;
+import com.javainuse.entity.UserEntity;
 import com.javainuse.model.UserDTO;
+import com.javainuse.model.UserRequest;
+import com.javainuse.model.UserResponse;
 import com.javainuse.service.JwtUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,19 +30,19 @@ public class JwtAuthenticationController {
     private JwtUserDetailsService userDetailsService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    public ResponseEntity<UserResponse> createAuthenticationToken(@RequestBody UserRequest authenticationRequest) {
+        authenticate(authenticationRequest.username(), authenticationRequest.password());
 
         final var userDetails = jwtInMemoryUserDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+                .loadUserByUsername(authenticationRequest.username());
 
         final var token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new UserResponse(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<DAOUser> saveUser(@RequestBody UserDTO user) {
+    public ResponseEntity<UserEntity> saveUser(@RequestBody UserDTO user) {
         return new ResponseEntity<>(userDetailsService.save(user), HttpStatus.CREATED);
     }
 
