@@ -1,4 +1,4 @@
-package com.javainuse.config;
+package com.javainuse.config.jwt;
 
 import java.io.IOException;
 import java.io.Serial;
